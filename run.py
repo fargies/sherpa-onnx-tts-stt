@@ -51,7 +51,7 @@ class SherpaOnnxEventHandler(AsyncEventHandler):
 
     async def handle_event(self, event: Event) -> bool:
         """Handles a single event."""
-        _LOGGER.debug("Received event: %s", event)
+        # _LOGGER.debug("Received event: %s", event)
         if Describe.is_type(event.type):
             await self.write_event(self.wyoming_info_.event())
             return True

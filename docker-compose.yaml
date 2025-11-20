@@ -1,0 +1,31 @@
+services:
+  homeassistant-stt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sherpa-onnx-tts-stt
+    environment:
+      DEBUG: False
+      LANGUAGE: fr-FR
+      STT_MODEL: sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06
+      STT_USE_INT8_ONNX_MODEL: true
+      STT_USE_ONLINE_PROCESSING: true
+      STT_THREAD_NUM: 2
+      TTS_MODEL: vits-piper-fr_FR-miro-high-int8
+      TTS_THREAD_NUM: 3
+      TTS_SPEAKER_SID: 0
+      CUSTOM_STT_MODEL: sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06
+      CUSTOM_STT_MODEL_EVAL: |-
+        sherpa_onnx.OnlineRecognizer.from_transducer(
+          tokens="/stt-models/sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06/tokens.txt",
+          encoder="/stt-models/sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06/encoder.onnx",
+          decoder="/stt-models/sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06/decoder.onnx",
+          joiner="/stt-models/sherpa-onnx-streaming-zipformer-fr-kroko-2025-08-06/joiner.onnx",
+          num_threads=2,
+          decoding_method="greedy_search",
+          sample_rate=16000,
+          feature_dim=80,
+        )
+    ports:
+     - 10401:10400
+    restart: unless-stopped
